@@ -77,13 +77,11 @@ function bindFunction(fn) {
     let fnArguments = Array.prototype.slice.call(arguments, 1);
 
     // Решение 1. Циклом добавляем агрументы.
-    let resultFn = fn.bind(null);
-
     fnArguments.forEach(function(item) {
-        resultFn = resultFn.bind(null, item);
+        fn = fn.bind(null, item);
     });
 
-    return resultFn;
+    return fn;
 
     // Решение 2. Добавляем аргументы средствами ES6
 
