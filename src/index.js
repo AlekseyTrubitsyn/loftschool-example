@@ -73,13 +73,27 @@ function returnCounter(number) {
 function bindFunction(fn) {
     // arguments содержит все параметры, включая переданную функцию.
     // Склонируем массив аргументов без первого элемента.
-    var fnArguments = Array.prototype.slice.call(arguments, 1);
 
-    // Встроенный метод работает с фиксированным числом параметров,
-    // сделал свой по аналогии с описанным в http://learn.javascript.ru/bind
-    return function() {
-        return fn.apply(null, fnArguments);
-    };
+    let fnArguments = Array.prototype.slice.call(arguments, 1);
+
+    // Решение 1. Циклом добавляем агрументы.
+    let resultFn = fn.bind(null);
+
+    fnArguments.forEach(function(item) {
+        resultFn = resultFn.bind(null, item);
+    });
+
+    return resultFn;
+
+    // Решение 2. Добавляем аргументы средствами ES6
+
+    // return fn.bind(null, ...fnArguments);
+
+    // Решение 3. Через функцию-обертку.
+
+    // return function() {
+    //     return fn.apply(null, fnArguments);
+    // };
 }
 
 export {
