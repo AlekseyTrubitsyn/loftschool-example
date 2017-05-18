@@ -149,12 +149,61 @@ function deleteTextNodesRecursive(where) {
  * для html <div class="some-class-1"><b>привет!</b> <b class="some-class-1 some-class-2">loftschool</b></div>
  * должен быть возвращен такой объект:
  * {
- *   tags: { DIV: 1, B: 2},
+ *   tags: { DIV: 1, B: 2}, << это противоречит тестам!!! Там статистика только по внутреннему содержимому!!!
  *   classes: { "some-class-1": 2, "some-class-2": 1 },
  *   texts: 3
  * }
  */
 function collectDOMStat(root) {
+    let result = {
+        tags: {},
+        classes: {},
+        texts: 0
+    };
+
+    // Вариант по условию из шапки
+    // addStatFromElement(root);
+
+    // Вариант проходящий по тестам
+    getNodesStat(root);
+
+    function addStatFromElement(el) {
+        if (el.nodeType === 3) {
+            result.texts++;
+
+        } else if (el.nodeType === 1) {
+            let tag = el.tagName;
+            let cl = el.classList;
+
+            checkAndIncrement(result.tags, tag);
+
+            for (let j = 0; j < cl.length; j++) {
+                checkAndIncrement(result.classes, cl[j]);
+            }
+
+            getNodesStat(el);
+        }
+    }
+
+    function getNodesStat(element) {
+        let nodes = element.childNodes;
+
+        for (let i = 0; i < nodes.length; i++) {
+            let subElement = nodes[i];
+
+            addStatFromElement(subElement);
+        }
+    }
+
+    function checkAndIncrement(obj, keyName) {
+        if (obj.hasOwnProperty(keyName)) {
+            obj[keyName]++; // = obj[keyName] + 1;
+        } else {
+            obj[keyName] = 1;
+        }
+    }
+
+    return result;
 }
 
 /**
