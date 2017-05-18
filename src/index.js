@@ -95,10 +95,19 @@ function findError(where) {
  * должно быть преобразовано в <div></div><p></p>
  */
 function deleteTextNodes(where) {
+    let nodes = where.childNodes;
+
+    for (let i = nodes.length - 1; i >= 0; i--) {
+        let elem = nodes[i];
+
+        if (elem.nodeType === 3) {
+            where.removeChild(elem);
+        }
+    }
 }
 
 /**
- * Выполнить предудыщее задание с использование рекурсии
+ * Выполнить предудыщее задание с использованием рекурсии
  * то есть необходимо заходить внутрь каждого дочернего элемента
  *
  * @param {Element} where - где искать
@@ -108,6 +117,19 @@ function deleteTextNodes(where) {
  * должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 function deleteTextNodesRecursive(where) {
+    (function clearTextNodes(element) {
+        let nodes = element.childNodes;
+
+        for (let i = nodes.length - 1; i >= 0; i--) {
+            let subElement = nodes[i];
+
+            if (subElement.nodeType === 3) {
+                element.removeChild(subElement);
+            } else if (subElement.nodeType === 1) {
+                clearTextNodes(subElement);
+            }
+        }
+    })(where);
 }
 
 /**
