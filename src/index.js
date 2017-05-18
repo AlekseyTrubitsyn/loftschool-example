@@ -53,7 +53,7 @@ function reduce(array, fn, initial) {
  Функция должна удалить указанное свойство из указанного объекта
  */
 function deleteProperty(obj, prop) {
-    if (prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
         delete obj[prop];
     }
 }
