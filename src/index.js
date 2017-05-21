@@ -95,15 +95,13 @@ function findError(where) {
  * должно быть преобразовано в <div></div><p></p>
  */
 function deleteTextNodes(where) {
-    let nodes = where.childNodes;
+    let nodes = Array.from(where.childNodes);
 
-    for (let i = nodes.length - 1; i >= 0; i--) {
-        let elem = nodes[i];
-
-        if (elem.nodeType === 3) {
-            where.removeChild(elem);
+    nodes.forEach(function (item) {
+        if (item.nodeType === 3) {
+            where.removeChild(item);
         }
-    }
+    });
 }
 
 /**
