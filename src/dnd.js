@@ -3,7 +3,7 @@
  * Создать страницу с кнопкой
  * При нажатии на кнопку должен создаваться div со случайными размерами, цветом и позицией
  * Необходимо предоставить возможность перетаскивать созданные div при помощи drag and drop
- * Запрощено использовать сторонние библиотеки. Разрешено пользоваться только тем, что встроено в браузер
+ * Запрещено использовать сторонние библиотеки. Разрешено пользоваться только тем, что встроено в браузер
  */
 
 /**
@@ -23,6 +23,31 @@ let homeworkContainer = document.querySelector('#homework-container');
  * @return {Element}
  */
 function createDiv() {
+    let newDiv = document.createElement('div');
+
+    newDiv.classList.add('draggable-div');
+    newDiv.style.width = getRandomPx(300);
+    newDiv.style.height = getRandomPx(300);
+    newDiv.style.top = getRandomPx(100);
+    newDiv.style.left = getRandomPx(100);
+    newDiv.style['background-color'] = getRandomColor();
+
+    function getRandomColor() {
+        let letters = '0123456789ABCDEF';
+        let color = '#';
+
+        for (let i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+
+        return color;
+    }
+
+    function getRandomPx(multiplier) {
+        return Math.floor(Math.random() * multiplier + 50) + 'px';
+    }
+
+    return newDiv;
 }
 
 /**
@@ -31,6 +56,44 @@ function createDiv() {
  * @param {Element} target
  */
 function addListeners(target) {
+
+    target.addEventListener('dragstart', function() {
+        return false;
+    });
+
+    target.addEventListener('mousedown', function(event) {
+        let coordinates = getCoordinates(target);
+        let shiftX = event.pageX - coordinates.left;
+        let shiftY = event.pageY - coordinates.top;
+
+        target.style.position = 'absolute';
+        target.style.zIndex = 1000;
+        document.body.appendChild(target);
+
+        moveAt(event);
+
+        document.addEventListener('mousemove', mouseMoveFunction);
+
+        target.addEventListener('mouseup', function onMouseUpFunction() {
+            document.removeEventListener('mousemove', mouseMoveFunction);
+            target.removeEventListener('mouseup', onMouseUpFunction);
+        });
+
+        function moveAt(event) {
+            target.style.left = event.pageX - shiftX + 'px';
+            target.style.top = event.pageY - shiftY + 'px';
+        }
+
+        function mouseMoveFunction(event) {
+            moveAt(event);
+        }
+
+        function getCoordinates(element) {
+            let bcRect = element.getBoundingClientRect();
+
+            return { top: bcRect.top, left: bcRect.left };
+        }
+    });
 }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
