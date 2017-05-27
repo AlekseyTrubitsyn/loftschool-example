@@ -41,9 +41,11 @@ function loadTowns() {
         let request = new XMLHttpRequest();
 
         request.open('GET', url, true);
+
         request.onerror = function() {
-            // console.log('onerror');
+            fixLoadingError();
         };
+
         request.onload = function() {
             try {
                 let response = request.response;
@@ -96,9 +98,32 @@ let filterResult = homeworkContainer.querySelector('#filter-result');
 let townsPromise = loadTowns();
 let townsArray;
 
-townsPromise.then(result => {
+townsPromise.then(putPromiseResultIntoArray, fixLoadingError);
+
+function putPromiseResultIntoArray(result) {
     townsArray = result;
-});
+}
+
+function fixLoadingError() {
+    let errorPar = document.createElement('P');
+    let newButton = document.createElement('BUTTON');
+
+    errorPar.innerText = 'Не удалось загрузить города';
+    newButton.innerText = 'Повторить';
+
+    newButton.addEventListener('click', function() {
+        homeworkContainer.removeChild(newButton);
+        homeworkContainer.removeChild(errorPar);
+
+        townsPromise = loadTowns().then(putPromiseResultIntoArray, fixLoadingError);
+    });
+
+    homeworkContainer.appendChild(errorPar);
+    homeworkContainer.appendChild(newButton);
+
+    loadingBlock.style.display = 'none';
+    filterBlock.style.display = 'none';
+}
 
 filterInput.addEventListener('keyup', function() {
     let inputValue = filterInput.value;
