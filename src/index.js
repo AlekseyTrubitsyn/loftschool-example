@@ -7,6 +7,11 @@
  * @return {Promise}
  */
 function delayPromise(seconds) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            return resolve('result');
+        }, seconds * 1000);
+    });
 }
 
 /**
@@ -17,6 +22,30 @@ function delayPromise(seconds) {
  * @return {Promise<Array<{name: String}>>}
  */
 function loadAndSortTowns() {
+    return new Promise((resolve, reject) => {
+        let url = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json';
+        let request = new XMLHttpRequest();
+
+        request.open('GET', url, true);
+        request.onload = function() {
+            try {
+                let response = request.response;
+
+                response = JSON.parse(response);
+                response = Array.from(response);
+                response.sort((a, b) => {
+                    return a.name > b.name;
+                });
+
+                return resolve(response);
+
+            } catch (e) {
+                return reject(e);
+            }
+        };
+
+        request.send();
+    });
 }
 
 export {
