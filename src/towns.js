@@ -42,7 +42,7 @@ function loadTowns() {
 
         request.open('GET', url, true);
         request.onerror = function() {
-            console.log('onerror');
+            // console.log('onerror');
         };
         request.onload = function() {
             try {
@@ -54,8 +54,8 @@ function loadTowns() {
                     return a.name > b.name;
                 });
 
-                loadingBlock.style['display'] = 'none';
-                filterBlock.style['display'] = 'block';
+                loadingBlock.style.display = 'none';
+                filterBlock.style.display = 'block';
 
                 return resolve(response);
 
@@ -86,16 +86,40 @@ function isMatching(full, chunk) {
     return !!full.match(new RegExp(chunk, 'i'));
 
     // Вариант 2 с приведением к одному регистру
-    //return (full.toLowerCase().indexOf(chunk.toLowerCase()) != -1);
+    // return (full.toLowerCase().indexOf(chunk.toLowerCase()) != -1);
 }
 
 let loadingBlock = homeworkContainer.querySelector('#loading-block');
 let filterBlock = homeworkContainer.querySelector('#filter-block');
 let filterInput = homeworkContainer.querySelector('#filter-input');
 let filterResult = homeworkContainer.querySelector('#filter-result');
-let townsPromise;
+let townsPromise = loadTowns();
+let townsArray;
+
+townsPromise.then(result => {
+    townsArray = result;
+});
 
 filterInput.addEventListener('keyup', function() {
+    let inputValue = filterInput.value;
+
+    filterResult.innerHTML = '';
+
+    if (!(inputValue !== '' && Array.isArray(townsArray))) {
+        return;
+    }
+
+    let resultArray = townsArray.filter((item) => {
+        return isMatching(item.name, inputValue);
+    });
+
+    resultArray.forEach((item) => {
+        let newItem = document.createElement('div');
+
+        newItem.innerText = item.name;
+
+        filterResult.appendChild(newItem);
+    });
 });
 
 export {
