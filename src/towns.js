@@ -27,6 +27,8 @@
  * @example
  * homeworkContainer.appendChild(...);
  */
+import {loadAndSortTowns} from "./index.js";
+
 let homeworkContainer = document.querySelector('#homework-container');
 
 /**
@@ -36,38 +38,7 @@ let homeworkContainer = document.querySelector('#homework-container');
  * @return {Promise<Array<{name: string}>>}
  */
 function loadTowns() {
-    return new Promise((resolve, reject) => {
-        let url = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json';
-        let request = new XMLHttpRequest();
-
-        request.open('GET', url, true);
-
-        request.onerror = function() {
-            fixLoadingError();
-        };
-
-        request.onload = function() {
-            try {
-                let response = request.response;
-
-                response = JSON.parse(response);
-                response = Array.from(response);
-                response.sort((a, b) => {
-                    return a.name > b.name;
-                });
-
-                loadingBlock.style.display = 'none';
-                filterBlock.style.display = 'block';
-
-                return resolve(response);
-
-            } catch (e) {
-                return reject(e);
-            }
-        };
-
-        request.send();
-    });
+    // Функционал импортируется из index.html
 }
 
 /**
@@ -98,7 +69,7 @@ let filterResult = homeworkContainer.querySelector('#filter-result');
 let townsPromise = loadTowns();
 let townsArray;
 
-townsPromise.then(putPromiseResultIntoArray, fixLoadingError);
+updateTownPoromise();
 
 function putPromiseResultIntoArray(result) {
     townsArray = result;
@@ -115,7 +86,7 @@ function fixLoadingError() {
         homeworkContainer.removeChild(newButton);
         homeworkContainer.removeChild(errorPar);
 
-        townsPromise = loadTowns().then(putPromiseResultIntoArray, fixLoadingError);
+        updateTownPoromise()
     });
 
     homeworkContainer.appendChild(errorPar);
@@ -123,6 +94,12 @@ function fixLoadingError() {
 
     loadingBlock.style.display = 'none';
     filterBlock.style.display = 'none';
+}
+
+function updateTownPoromise() {
+    townsPromise = loadAndSortTowns().then(putPromiseResultIntoArray, fixLoadingError);
+    loadingBlock.style.display = 'none';
+    filterBlock.style.display = 'block';
 }
 
 filterInput.addEventListener('keyup', function() {
