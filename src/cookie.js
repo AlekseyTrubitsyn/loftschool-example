@@ -32,6 +32,8 @@
  * @example
  * homeworkContainer.appendChild(...);
  */
+import {createCookie, deleteCookie} from "./index.js";
+
 let homeworkContainer = document.querySelector('#homework-container');
 let filterNameInput = homeworkContainer.querySelector('#filter-name-input');
 let addNameInput = homeworkContainer.querySelector('#add-name-input');
@@ -113,14 +115,6 @@ function createResultTable(objectsArray) {
 
         listTable.appendChild(newRow);
     });
-}
-
-function createCookie(name, value) {
-    document.cookie = name + '=' + value;
-}
-
-function deleteCookie(name) {
-    document.cookie = name + '=""; expires=' + (new Date(-1));
 }
 
 function isMatching(full, chunk) {
