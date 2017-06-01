@@ -32,7 +32,7 @@
  * @example
  * homeworkContainer.appendChild(...);
  */
-import {createCookie, deleteCookie} from "./index.js";
+import { createCookie, deleteCookie } from './index.js';
 
 let homeworkContainer = document.querySelector('#homework-container');
 let filterNameInput = homeworkContainer.querySelector('#filter-name-input');
@@ -91,6 +91,8 @@ function getCookiesArrayOfObjects() {
 }
 
 function createResultTable(objectsArray) {
+    let fragment = document.createDocumentFragment();
+
     objectsArray.forEach(function (item) {
         let newRow = document.createElement('tr');
         let nameCell = document.createElement('td');
@@ -113,8 +115,10 @@ function createResultTable(objectsArray) {
         newRow.appendChild(valueCell);
         newRow.appendChild(deleteCell);
 
-        listTable.appendChild(newRow);
+        fragment.appendChild(newRow);
     });
+
+    listTable.appendChild(fragment);
 }
 
 function isMatching(full, chunk) {
